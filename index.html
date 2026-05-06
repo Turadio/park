@@ -4,7 +4,7 @@
     <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>ParkFlow · Check-In de Estacionamiento</title>
+    <title>ParkFlow · TuRadio - Estacionamiento</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,14 +26,15 @@
             backdrop-filter: blur(10px);
         }
         .header h1 {
-            font-size: 2rem;
+            font-size: 1.6rem;
             font-weight: 700;
             background: linear-gradient(135deg, #ffd89b, #c7e9fb);
             background-clip: text;
             -webkit-background-clip: text;
             color: transparent;
         }
-        .header p { font-size: 0.8rem; color: #b8d8cf; margin-top: 6px; }
+        .header h1 small { font-size: 0.7rem; display: block; color: #ffd89b; background: none; -webkit-background-clip: unset; background-clip: unset; color: #ffd89b; }
+        .header p { font-size: 0.7rem; color: #b8d8cf; margin-top: 6px; }
         
         .tabs {
             display: flex;
@@ -173,8 +174,6 @@
         .registro-comentario { font-size: 0.7rem; color: #b8d8cf; }
         .empty-state { text-align: center; padding: 40px; color: #b8d8cf; }
         
-        footer { text-align: center; margin-top: 32px; font-size: 0.7rem; color: #6a9c8a; }
-        
         /* MODAL DE INSTRUCCIONES */
         .modal-instrucciones {
             position: fixed;
@@ -182,7 +181,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             backdrop-filter: blur(8px);
             z-index: 2000;
             display: flex;
@@ -202,12 +201,22 @@
             overflow-y: auto;
         }
         .modal-content-instrucciones h2 { color: #ffb347; margin-bottom: 16px; }
+        .modal-content-instrucciones h3 { color: #ffd89b; margin-top: 16px; margin-bottom: 8px; font-size: 1rem; }
         .modal-content-instrucciones ol, .modal-content-instrucciones ul { margin-left: 20px; margin-top: 10px; }
         .modal-content-instrucciones li { margin: 8px 0; }
         .btn-cerrar-modal {
             background: #ffb347;
             width: 100%;
             margin-top: 20px;
+        }
+        .seguridad-badge {
+            background: rgba(255,255,255,0.1);
+            border-radius: 30px;
+            padding: 10px;
+            margin-top: 16px;
+            text-align: center;
+            font-size: 0.7rem;
+            border-left: 3px solid #ffb347;
         }
         
         .btn-ayuda-flotante {
@@ -225,7 +234,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        /* Botón de instalación visible siempre */
         .install-permanent-btn {
             background: #ffb347;
             color: #1a3c34;
@@ -241,13 +249,14 @@
         @media (max-width: 550px) {
             .btn-nivel, .btn-sector { padding: 10px 14px; font-size: 1rem; min-width: 55px; }
             .active-card .tiempo { font-size: 2.2rem; }
+            .header h1 { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>🚗 PARKFLOW</h1>
+        <h1>🚗 PARKFLOW <small>por TURADIO</small></h1>
         <p>Check-In de Estacionamiento Intuitivo</p>
     </div>
     
@@ -290,7 +299,7 @@
             <button id="btnCheckIn" onclick="realizarCheckIn()">✅ Registrar Check-In</button>
         </div>
         <div style="margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 24px;">
-            <p style="font-size: 0.7rem; color: #ffd89b;">💡 Tip: No necesitas internet. El sistema guarda todo localmente en tu teléfono.</p>
+            <p style="font-size: 0.7rem; color: #ffd89b;">💡 Tip: El temporizador comienza automáticamente al registrar tu vehículo. No necesitas configurar nada.</p>
         </div>
     </div>
     
@@ -305,39 +314,42 @@
         <div id="historialContainer"><div class="empty-state">📋 No hay registros históricos</div></div>
         <button onclick="limpiarHistorial()" style="background:#e67e22; margin-top:16px; width:100%;">🗑️ Limpiar historial</button>
     </div>
-    
-    <footer>🚗 PARKFLOW · Funciona sin internet · Instalable como app</footer>
 </div>
 
 <!-- BOTÓN DE AYUDA FLOTANTE -->
 <button class="btn-ayuda-flotante" id="btnAyudaFlotante">❓</button>
 
-<!-- BOTÓN DE INSTALACIÓN PERMANENTE (visible todo el tiempo) -->
+<!-- BOTÓN DE INSTALACIÓN PERMANENTE -->
 <div id="installButtonPermanent" style="margin: 16px auto; text-align: center; max-width: 800px;">
-    <button class="install-permanent-btn" id="btnInstalarPermanente">📲 Instalar PARKFLOW en tu celular</button>
+    <button class="install-permanent-btn" id="btnInstalarPermanente">📲 Agregar PARKFLOW a tu pantalla de inicio</button>
 </div>
 
-<!-- MODAL DE INSTRUCCIONES -->
+<!-- MODAL DE INSTRUCCIONES COMPLETO -->
 <div id="modalInstrucciones" class="modal-instrucciones" style="display: none;">
     <div class="modal-content-instrucciones">
-        <h2>📱 Bienvenido a PARKFLOW</h2>
+        <h2>📱 PARKFLOW · TuRadio</h2>
         <p><strong>🚗 ¿Cómo usar la app?</strong></p>
         <ol>
             <li>📍 Selecciona el <strong>nivel</strong> (1 al 5) donde estacionaste</li>
             <li>📍 Selecciona el <strong>sector</strong> (A al G)</li>
             <li>📝 Agrega un comentario (ej: "cerca del ascensor")</li>
             <li>✅ Presiona <strong>"Registrar Check-In"</strong></li>
-            <li>⏱️ Revisa el tiempo en la pestaña <strong>"Activo"</strong></li>
+            <li>⏱️ El <strong>temporizador comienza automáticamente</strong> (no necesitas configurar nada)</li>
             <li>🏁 Al retirar tu vehículo, presiona <strong>"Finalizar estacionamiento"</strong></li>
             <li>📋 Todo queda guardado en <strong>"Historial"</strong></li>
         </ol>
         
-        <p style="margin-top: 16px;"><strong>📲 ¿Cómo instalar PARKFLOW en tu celular?</strong></p>
+        <h3>📲 ¿Cómo agregar PARKFLOW a tu pantalla de inicio?</h3>
         <ul>
-            <li><strong>Android (Chrome):</strong> Presiona el botón "Instalar PARKFLOW" que aparece abajo</li>
-            <li><strong>iPhone/iPad (Safari):</strong> Presiona el botón "Compartir" (cuadro con flecha) → "Agregar a pantalla de inicio"</li>
+            <li><strong>Android (Chrome):</strong> Presiona el botón "Agregar PARKFLOW a tu pantalla de inicio" que aparece abajo</li>
+            <li><strong>iPhone/iPad (Safari):</strong> Presiona "Compartir" → "Agregar a pantalla de inicio"</li>
         </ul>
-        <p style="margin-top: 12px; font-size: 0.8rem; color: #ffd89b;">✅ Una vez instalada, funciona completamente SIN INTERNET</p>
+        
+        <div class="seguridad-badge">
+            🔒 <strong>¿Es seguro?</strong> PARKFLOW está alojado en <strong>GitHub</strong>, una plataforma confiable que analiza cada archivo en busca de virus y malware. No es una instalación tradicional, solo un <strong>acceso directo</strong> que guarda tus datos localmente en tu teléfono. Nadie más accede a tu información.
+        </div>
+        
+        <p style="margin-top: 12px; font-size: 0.8rem; color: #ffd89b;">✅ Una vez agregado, funciona completamente <strong>SIN INTERNET</strong></p>
         <button class="btn-cerrar-modal" id="cerrarModalInstrucciones">✨ Entendido, ¡comenzar!</button>
     </div>
 </div>
@@ -383,7 +395,7 @@
         document.getElementById('comentario').value = '';
         mostrarPanel('activo');
         actualizarUI();
-        alert(`✅ Estacionamiento registrado en Nivel ${nuevoEstacionamiento.nivel} - Sector ${nuevoEstacionamiento.sector}`);
+        alert(`✅ Estacionamiento registrado en Nivel ${nuevoEstacionamiento.nivel} - Sector ${nuevoEstacionamiento.sector}\n⏱️ El temporizador ha comenzado automáticamente.`);
     }
     
     function finalizarEstacionamiento() {
@@ -463,18 +475,16 @@
         navigator.serviceWorker.register('/sw.js').then(reg => console.log('Service Worker registrado')).catch(err => console.log('Error SW:', err));
     }
     
-    // Evento de instalación PWA
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
         const btnInstalar = document.getElementById('btnInstalarPermanente');
         if (btnInstalar) {
             btnInstalar.style.display = 'block';
-            btnInstalar.textContent = '📲 Instalar PARKFLOW en tu celular';
+            btnInstalar.textContent = '📲 Agregar PARKFLOW a tu pantalla de inicio';
         }
     });
     
-    // Botón de instalación permanente
     const btnInstalarPermanente = document.getElementById('btnInstalarPermanente');
     if (btnInstalarPermanente) {
         btnInstalarPermanente.addEventListener('click', () => {
@@ -482,12 +492,12 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        alert('✅ PARKFLOW ha sido instalada correctamente');
+                        alert('✅ PARKFLOW ha sido agregado a tu pantalla de inicio');
                     }
                     deferredPrompt = null;
                 });
             } else {
-                alert('📱 Para instalar en iPhone: presiona "Compartir" → "Agregar a pantalla de inicio"\n\nEn Android: abre el menú (⋮) → "Instalar aplicación"');
+                alert('📱 En Chrome: presiona los tres puntos (⋮) → "Agregar a pantalla de inicio"\n\nEn iPhone: presiona "Compartir" → "Agregar a pantalla de inicio"');
             }
         });
     }
@@ -514,15 +524,15 @@
     cargarDatos();
 </script>
 
-<!-- Mensaje en footer con instrucciones manuales -->
 <footer style="max-width: 800px; margin: 20px auto 0; text-align: center;">
     <div style="margin-top: 12px; font-size: 0.65rem; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 30px;">
-        📲 <strong>¿Cómo instalar PARKFLOW?</strong><br>
-        • Android: Presiona el botón "Instalar PARKFLOW" que aparece arriba<br>
-        • iPhone: Botón "Compartir" → "Agregar a pantalla de inicio"
+        📲 <strong>¿Cómo agregar PARKFLOW a tu pantalla de inicio?</strong><br>
+        • Android (Chrome): Presiona el botón "Agregar PARKFLOW a tu pantalla de inicio" que aparece arriba<br>
+        • iPhone: Botón "Compartir" → "Agregar a pantalla de inicio"<br>
+        • Una vez agregado, funciona <strong>SIN INTERNET</strong>
     </div>
     <div style="margin-top: 8px; font-size: 0.6rem; color: #6a9c8a;">
-        🚗 PARKFLOW · Funciona sin internet
+        🚗 PARKFLOW · TuRadio · Datos almacenados localmente
     </div>
 </footer>
 </body>
