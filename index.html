@@ -299,6 +299,16 @@
     </div>
     
     <footer>🚗 PARKFLOW · Funciona sin internet · Instalable como app</footer>
+
+    <!-- BOTÓN DE INSTALACIÓN PWA -->
+<div id="installContainer" style="position: fixed; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; z-index: 1000; pointer-events: none;">
+    <div id="installCard" style="background: #ffb347; color: #1a3c34; border-radius: 60px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); pointer-events: auto; font-weight: bold;">
+        <span>📲</span>
+        <span id="installText">Instalar app en tu celular</span>
+        <button id="installButton" style="background: white; color: #1a3c34; border: none; padding: 6px 16px; border-radius: 40px; font-weight: bold; cursor: pointer;">Instalar</button>
+        <button id="closeInstall" style="background: transparent; border: none; font-size: 18px; cursor: pointer; color: #1a3c34;">✖</button>
+    </div>
+</div>
 </div>
 
 <script>
@@ -562,6 +572,70 @@
     configurarSelectores();
     cargarDatos();
     initPWA();
+
+// ===== INSTALACIÓN PWA =====
+let deferredPrompt;
+const installContainer = document.getElementById('installContainer');
+const installButton = document.getElementById('installButton');
+const closeInstall = document.getElementById('closeInstall');
+const installText = document.getElementById('installText');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installContainer.style.display = 'flex';
+    
+    // Detectar dispositivo para mostrar instrucciones claras
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
+    
+    if (isIOS) {
+        installText.innerHTML = '📱 iOS: Presiona "Compartir" → "Agregar a pantalla de inicio"';
+        installButton.style.display = 'none';
+    } else if (isAndroid) {
+        installText.innerHTML = '📲 Android: Presiona "Instalar" para agregar la app a tu pantalla de inicio';
+        installButton.style.display = 'flex';
+    } else {
+        installText.innerHTML = '💻 Abre este sitio desde tu celular para instalar la app';
+        installButton.style.display = 'none';
+    }
+});
+
+installButton.addEventListener('click', () => {
+    if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+            if (choiceResult.outcome === 'accepted') {
+                console.log('Usuario instaló la app');
+            }
+            deferredPrompt = null;
+            installContainer.style.display = 'none';
+        });
+    }
+});
+
+closeInstall.addEventListener('click', () => {
+    installContainer.style.display = 'none';
+});
+
+// Si no hay evento beforeinstallprompt (ej: iOS sin HTTPS o ya instalada), ocultamos el botón automático
+window.addEventListener('load', () => {
+    if (!deferredPrompt && !/Android/.test(navigator.userAgent)) {
+        // En iOS, mostramos mensaje manual en el historial o panel de ayuda
+    }
+});
+
+// También agregar un enlace de ayuda en el footer
+const footer = document.querySelector('footer');
+if (footer) {
+    const ayudaInstall = document.createElement('div');
+    ayudaInstall.style.marginTop = '10px';
+    ayudaInstall.style.fontSize = '0.65rem';
+    ayudaInstall.innerHTML = '📲 Para instalar esta app en tu celular: <strong>Chrome/Android</strong>: menú → "Instalar aplicación" · <strong>iPhone/iPad</strong>: compartir → "Agregar a pantalla de inicio"';
+    footer.appendChild(ayudaInstall);
+}
+
+    
 </script>
 </body>
 </html>
