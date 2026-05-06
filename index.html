@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="manifest" href="/manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>ParkFlow · TuRadio - Estacionamiento</title>
@@ -234,18 +233,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        .install-permanent-btn {
-            background: #ffb347;
-            color: #1a3c34;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 60px;
-            font-weight: bold;
-            margin-top: 16px;
-            width: 100%;
-            cursor: pointer;
-        }
-        
         @media (max-width: 550px) {
             .btn-nivel, .btn-sector { padding: 10px 14px; font-size: 1rem; min-width: 55px; }
             .active-card .tiempo { font-size: 2.2rem; }
@@ -319,11 +306,6 @@
 <!-- BOTÓN DE AYUDA FLOTANTE -->
 <button class="btn-ayuda-flotante" id="btnAyudaFlotante">❓</button>
 
-<!-- BOTÓN DE INSTALACIÓN PERMANENTE -->
-<div id="installButtonPermanent" style="margin: 16px auto; text-align: center; max-width: 800px;">
-    <button class="install-permanent-btn" id="btnInstalarPermanente">📲 Agregar PARKFLOW a tu pantalla de inicio</button>
-</div>
-
 <!-- MODAL DE INSTRUCCIONES COMPLETO -->
 <div id="modalInstrucciones" class="modal-instrucciones" style="display: none;">
     <div class="modal-content-instrucciones">
@@ -334,22 +316,23 @@
             <li>📍 Selecciona el <strong>sector</strong> (A al G)</li>
             <li>📝 Agrega un comentario (ej: "cerca del ascensor")</li>
             <li>✅ Presiona <strong>"Registrar Check-In"</strong></li>
-            <li>⏱️ El <strong>temporizador comienza automáticamente</strong> (no necesitas configurar nada)</li>
+            <li>⏱️ El <strong>temporizador comienza automáticamente</strong></li>
             <li>🏁 Al retirar tu vehículo, presiona <strong>"Finalizar estacionamiento"</strong></li>
             <li>📋 Todo queda guardado en <strong>"Historial"</strong></li>
         </ol>
         
-        <h3>📲 ¿Cómo agregar PARKFLOW a tu pantalla de inicio?</h3>
-        <ul>
-            <li><strong>Android (Chrome):</strong> Presiona el botón "Agregar PARKFLOW a tu pantalla de inicio" que aparece abajo</li>
-            <li><strong>iPhone/iPad (Safari):</strong> Presiona "Compartir" → "Agregar a pantalla de inicio"</li>
-        </ul>
+        <h3>📲 Cómo agregar PARKFLOW a tu pantalla de inicio</h3>
+        <ol>
+            <li>Presiona los <strong>tres puntos ⋮</strong> en la esquina superior derecha</li>
+            <li>Selecciona <strong>"Agregar a pantalla de inicio"</strong></li>
+            <li>Confirma el nombre y presiona <strong>"Agregar"</strong></li>
+        </ol>
+        <p style="color: #ffd89b;">✅ Una vez agregado, el ícono funcionará <strong>SIN INTERNET</strong></p>
         
         <div class="seguridad-badge">
             🔒 <strong>¿Es seguro?</strong> PARKFLOW está alojado en <strong>GitHub</strong>, una plataforma confiable que analiza cada archivo en busca de virus y malware. No es una instalación tradicional, solo un <strong>acceso directo</strong> que guarda tus datos localmente en tu teléfono. Nadie más accede a tu información.
         </div>
         
-        <p style="margin-top: 12px; font-size: 0.8rem; color: #ffd89b;">✅ Una vez agregado, funciona completamente <strong>SIN INTERNET</strong></p>
         <button class="btn-cerrar-modal" id="cerrarModalInstrucciones">✨ Entendido, ¡comenzar!</button>
     </div>
 </div>
@@ -358,7 +341,6 @@
     // ===== ALMACENAMIENTO LOCAL =====
     let estacionamientoActivo = null;
     let historial = [];
-    let deferredPrompt = null;
     
     function cargarDatos() {
         const activoGuardado = localStorage.getItem('parkflow_activo');
@@ -448,11 +430,7 @@
     let intervalo;
     function actualizarTemporizador() {
         if (intervalo) clearInterval(intervalo);
-        intervalo = setInterval(() => {
-            if (estacionamientoActivo) {
-                actualizarActivo();
-            }
-        }, 1000);
+        intervalo = setInterval(() => { if (estacionamientoActivo) actualizarActivo(); }, 1000);
     }
     
     function limpiarHistorial() { if (confirm("¿Eliminar todo el historial?")) { historial = []; guardarDatos(); actualizarUI(); } }
@@ -468,38 +446,6 @@
         document.getElementById(`panel-${panel}`).classList.add('active');
         event.target.classList.add('active');
         actualizarUI();
-    }
-    
-    // ===== PWA Y SERVICIO WORKER =====
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(reg => console.log('Service Worker registrado')).catch(err => console.log('Error SW:', err));
-    }
-    
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        const btnInstalar = document.getElementById('btnInstalarPermanente');
-        if (btnInstalar) {
-            btnInstalar.style.display = 'block';
-            btnInstalar.textContent = '📲 Agregar PARKFLOW a tu pantalla de inicio';
-        }
-    });
-    
-    const btnInstalarPermanente = document.getElementById('btnInstalarPermanente');
-    if (btnInstalarPermanente) {
-        btnInstalarPermanente.addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        alert('✅ PARKFLOW ha sido agregado a tu pantalla de inicio');
-                    }
-                    deferredPrompt = null;
-                });
-            } else {
-                alert('📱 En Chrome: presiona los tres puntos (⋮) → "Agregar a pantalla de inicio"\n\nEn iPhone: presiona "Compartir" → "Agregar a pantalla de inicio"');
-            }
-        });
     }
     
     // ===== MODAL DE INSTRUCCIONES =====
@@ -527,9 +473,10 @@
 <footer style="max-width: 800px; margin: 20px auto 0; text-align: center;">
     <div style="margin-top: 12px; font-size: 0.65rem; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 30px;">
         📲 <strong>¿Cómo agregar PARKFLOW a tu pantalla de inicio?</strong><br>
-        • Android (Chrome): Presiona el botón "Agregar PARKFLOW a tu pantalla de inicio" que aparece arriba<br>
-        • iPhone: Botón "Compartir" → "Agregar a pantalla de inicio"<br>
-        • Una vez agregado, funciona <strong>SIN INTERNET</strong>
+        1. Presiona los <strong>tres puntos ⋮</strong> (arriba a la derecha)<br>
+        2. Selecciona <strong>"Agregar a pantalla de inicio"</strong><br>
+        3. Confirma el nombre y listo<br>
+        ✅ Una vez agregado, funciona <strong>SIN INTERNET</strong>
     </div>
     <div style="margin-top: 8px; font-size: 0.6rem; color: #6a9c8a;">
         🚗 PARKFLOW · TuRadio · Datos almacenados localmente
