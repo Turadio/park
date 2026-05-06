@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>ParkFlow · TuRadio - Estacionamiento</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="/manifest.json">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: linear-gradient(145deg, #1a3c34 0%, #0e2a24 100%);
+            background: linear-gradient(145deg, #0a2e28 0%, #1a4a3e 100%);
             font-family: 'Inter', system-ui, sans-serif;
             padding: 16px;
             color: #f0f0f0;
@@ -16,30 +17,30 @@
         }
         .container { max-width: 800px; margin: 0 auto; }
         
+        /* HEADER CON ESTILO DE SEMÁFORO */
         .header {
             text-align: center;
             margin-bottom: 24px;
             padding: 20px;
-            background: rgba(255,255,255,0.05);
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
             border-radius: 48px;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
         .header h1 {
-            font-size: 1.6rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #ffd89b, #c7e9fb);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1a3c34;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.3);
         }
-        .header h1 small { font-size: 0.7rem; display: block; color: #ffd89b; background: none; -webkit-background-clip: unset; background-clip: unset; color: #ffd89b; }
-        .header p { font-size: 0.7rem; color: #b8d8cf; margin-top: 6px; }
+        .header h1 small { font-size: 0.7rem; display: block; color: #2c5a4e; text-shadow: none; }
+        .header p { font-size: 0.7rem; color: #2c5a4e; font-weight: 600; margin-top: 6px; }
         
+        /* TABS CON COLORES SEMÁFORO */
         .tabs {
             display: flex;
             gap: 12px;
             margin-bottom: 24px;
-            background: rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.4);
             border-radius: 60px;
             padding: 6px;
         }
@@ -49,49 +50,58 @@
             padding: 12px 8px;
             border-radius: 60px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: 0.2s;
             background: transparent;
-            color: #c7e9fb;
+            color: #ffd700;
             border: none;
+            font-size: 0.9rem;
         }
         .tab.active {
-            background: #ffb347;
+            background: #ffd700;
             color: #1a3c34;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         
         .panel {
             display: none;
-            background: rgba(255,255,255,0.08);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(10px);
             border-radius: 32px;
             padding: 24px;
             animation: fade 0.2s ease;
+            border: 1px solid rgba(255,215,0,0.3);
         }
         .panel.active { display: block; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
+        /* TARJETA ACTIVO */
         .active-card {
-            background: linear-gradient(135deg, #ffb347, #ff8c00);
+            background: linear-gradient(135deg, #ffd700, #ff8c00);
             border-radius: 40px;
             padding: 24px;
             text-align: center;
             margin-bottom: 24px;
             color: #1a3c34;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .active-card .tiempo {
             font-size: 3rem;
             font-weight: 800;
             font-family: monospace;
-            letter-spacing: 4px;
+            letter-spacing: 6px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 60px;
+            padding: 8px;
+            margin-top: 8px;
         }
         .active-card .ubicacion {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
             margin-top: 12px;
         }
         .active-card .alerta {
-            background: rgba(255,255,255,0.3);
+            background: rgba(0,0,0,0.2);
             padding: 8px;
             border-radius: 40px;
             margin-top: 16px;
@@ -100,7 +110,7 @@
         
         .form-grid { display: flex; flex-direction: column; gap: 20px; margin-bottom: 24px; }
         .campo { display: flex; flex-direction: column; gap: 8px; }
-        .campo label { font-weight: 600; font-size: 0.8rem; color: #ffd89b; }
+        .campo label { font-weight: 700; font-size: 0.8rem; color: #ffd700; }
         
         .selector-nivel, .selector-sector {
             display: flex;
@@ -110,7 +120,7 @@
         }
         .btn-nivel, .btn-sector {
             background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid #ffd700;
             padding: 14px 20px;
             border-radius: 60px;
             font-size: 1.2rem;
@@ -122,28 +132,29 @@
             text-align: center;
         }
         .btn-nivel.selected, .btn-sector.selected {
-            background: #ffb347;
-            border-color: #ffb347;
+            background: #ffd700;
+            border-color: #ffd700;
             color: #1a3c34;
         }
         
         input, select, textarea {
             background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.2);
+            border: 2px solid #ffd700;
             padding: 14px 18px;
             border-radius: 60px;
             font-size: 1rem;
             color: white;
             font-family: inherit;
         }
-        input::placeholder, textarea::placeholder { color: #b8d8cf; }
+        input::placeholder, textarea::placeholder { color: #ccc; }
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #ffb347;
+            border-color: #ff8c00;
+            box-shadow: 0 0 10px rgba(255,215,0,0.5);
         }
         
         button {
-            background: #ffb347;
+            background: #ffd700;
             border: none;
             padding: 16px;
             border-radius: 60px;
@@ -153,25 +164,21 @@
             transition: 0.2s;
             color: #1a3c34;
         }
-        button:hover { background: #ff9f1a; transform: translateY(-2px); }
+        button:hover { background: #ff8c00; transform: translateY(-2px); }
         .btn-danger { background: #e74c3c; color: white; }
         .btn-danger:hover { background: #c0392b; }
         
         .registro-item {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             border-radius: 28px;
             padding: 16px;
             margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
+            border-left: 4px solid #ffd700;
         }
         .registro-ubicacion { font-weight: 700; font-size: 1rem; }
-        .registro-tiempo { font-size: 0.75rem; color: #ffd89b; font-family: monospace; }
-        .registro-comentario { font-size: 0.7rem; color: #b8d8cf; }
-        .empty-state { text-align: center; padding: 40px; color: #b8d8cf; }
+        .registro-tiempo { font-size: 0.75rem; color: #ffd700; font-family: monospace; }
+        .registro-comentario { font-size: 0.7rem; color: #ccc; }
+        .empty-state { text-align: center; padding: 40px; color: #ffd700; }
         
         /* MODAL DE INSTRUCCIONES */
         .modal-instrucciones {
@@ -195,48 +202,60 @@
             width: 100%;
             padding: 28px;
             color: white;
-            border: 1px solid #ffb347;
+            border: 2px solid #ffd700;
             max-height: 90vh;
             overflow-y: auto;
         }
-        .modal-content-instrucciones h2 { color: #ffb347; margin-bottom: 16px; }
-        .modal-content-instrucciones h3 { color: #ffd89b; margin-top: 16px; margin-bottom: 8px; font-size: 1rem; }
+        .modal-content-instrucciones h2 { color: #ffd700; margin-bottom: 16px; }
+        .modal-content-instrucciones h3 { color: #ff8c00; margin-top: 16px; margin-bottom: 8px; font-size: 1rem; }
         .modal-content-instrucciones ol, .modal-content-instrucciones ul { margin-left: 20px; margin-top: 10px; }
         .modal-content-instrucciones li { margin: 8px 0; }
         .btn-cerrar-modal {
-            background: #ffb347;
+            background: #ffd700;
+            color: #1a3c34;
             width: 100%;
             margin-top: 20px;
         }
         .seguridad-badge {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255,215,0,0.15);
             border-radius: 30px;
-            padding: 10px;
+            padding: 12px;
             margin-top: 16px;
             text-align: center;
-            font-size: 0.7rem;
-            border-left: 3px solid #ffb347;
+            font-size: 0.75rem;
+            border-left: 3px solid #ffd700;
         }
         
         .btn-ayuda-flotante {
             position: fixed;
             bottom: 20px;
             left: 20px;
-            background: #ffb347;
+            background: #ffd700;
             border: none;
             width: 55px;
             height: 55px;
             border-radius: 55px;
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
             z-index: 1000;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            color: #1a3c34;
         }
+        
+        .footer-seguridad {
+            max-width: 800px;
+            margin: 20px auto 0;
+            text-align: center;
+            background: rgba(0,0,0,0.5);
+            border-radius: 48px;
+            padding: 16px;
+            border: 1px solid #ffd700;
+        }
+        .footer-seguridad p { font-size: 0.7rem; margin: 4px 0; }
         
         @media (max-width: 550px) {
             .btn-nivel, .btn-sector { padding: 10px 14px; font-size: 1rem; min-width: 55px; }
             .active-card .tiempo { font-size: 2.2rem; }
-            .header h1 { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -244,7 +263,7 @@
 <div class="container">
     <div class="header">
         <h1>🚗 PARKFLOW <small>por TURADIO</small></h1>
-        <p>Check-In de Estacionamiento Intuitivo</p>
+        <p>🚦 Check-In · Temporizador · Sin internet 🚦</p>
     </div>
     
     <div class="tabs">
@@ -285,8 +304,8 @@
             </div>
             <button id="btnCheckIn" onclick="realizarCheckIn()">✅ Registrar Check-In</button>
         </div>
-        <div style="margin-top: 20px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 24px;">
-            <p style="font-size: 0.7rem; color: #ffd89b;">💡 Tip: El temporizador comienza automáticamente al registrar tu vehículo. No necesitas configurar nada.</p>
+        <div style="margin-top: 20px; padding: 16px; background: rgba(255,215,0,0.1); border-radius: 24px; text-align: center;">
+            <p style="font-size: 0.7rem; color: #ffd700;">⏱️ El temporizador comienza automáticamente. No necesitas configurar nada.</p>
         </div>
     </div>
     
@@ -309,32 +328,50 @@
 <!-- MODAL DE INSTRUCCIONES COMPLETO -->
 <div id="modalInstrucciones" class="modal-instrucciones" style="display: none;">
     <div class="modal-content-instrucciones">
-        <h2>📱 PARKFLOW · TuRadio</h2>
-        <p><strong>🚗 ¿Cómo usar la app?</strong></p>
+        <h2>🚦 PARKFLOW · TuRadio</h2>
+        
+        <h3>🚗 ¿CÓMO USAR PARKFLOW?</h3>
         <ol>
-            <li>📍 Selecciona el <strong>nivel</strong> (1 al 5) donde estacionaste</li>
-            <li>📍 Selecciona el <strong>sector</strong> (A al G)</li>
-            <li>📝 Agrega un comentario (ej: "cerca del ascensor")</li>
+            <li>📍 Selecciona el <strong>NIVEL</strong> (1 al 5) donde estacionaste</li>
+            <li>📍 Selecciona el <strong>SECTOR</strong> (A al G)</li>
+            <li>📝 Escribe un <strong>COMENTARIO</strong> rápido (ej: cerca del ascensor)</li>
             <li>✅ Presiona <strong>"Registrar Check-In"</strong></li>
-            <li>⏱️ El <strong>temporizador comienza automáticamente</strong></li>
-            <li>🏁 Al retirar tu vehículo, presiona <strong>"Finalizar estacionamiento"</strong></li>
+            <li>⏱️ El <strong>TEMPORIZADOR</strong> comienza automáticamente</li>
+            <li>🏁 Cuando regreses, presiona <strong>"Finalizar estacionamiento"</strong></li>
             <li>📋 Todo queda guardado en <strong>"Historial"</strong></li>
         </ol>
         
-        <h3>📲 Cómo agregar PARKFLOW a tu pantalla de inicio</h3>
-        <ol>
-            <li>Presiona los <strong>tres puntos ⋮</strong> en la esquina superior derecha</li>
-            <li>Selecciona <strong>"Agregar a pantalla de inicio"</strong></li>
-            <li>Confirma el nombre y presiona <strong>"Agregar"</strong></li>
-        </ol>
-        <p style="color: #ffd89b;">✅ Una vez agregado, el ícono funcionará <strong>SIN INTERNET</strong></p>
+        <h3>📲 CÓMO AGREGAR A PANTALLA DE INICIO</h3>
+        <ul>
+            <li><strong>Android (Chrome):</strong> Tres puntos ⋮ → "Agregar a pantalla de inicio"</li>
+            <li><strong>iPhone (Safari):</strong> Botón compartir → "Agregar a pantalla de inicio"</li>
+        </ul>
+        <p style="color: #ffd700;">✅ Una vez agregado, funciona <strong>SIN INTERNET</strong></p>
+        
+        <h3>🔒 SEGURIDAD Y PRIVACIDAD</h3>
+        <ul>
+            <li>🔐 PARKFLOW <strong>NO es una aplicación</strong> que se instala. Es solo una página web.</li>
+            <li>🔐 <strong>NO necesitas dar permisos</strong> especiales. NO accede a tus contactos, fotos, ubicación ni archivos.</li>
+            <li>🔐 <strong>TUS DATOS</strong> se guardan LOCALMENTE en tu teléfono. Nadie más puede verlos.</li>
+            <li>🔐 PARKFLOW está alojado en <strong>GITHUB</strong>, una plataforma mundial que analiza cada archivo en busca de virus y malware.</li>
+            <li>🔐 Puedes <strong>BORRAR los datos</strong> en cualquier momento desde el botón "Limpiar historial".</li>
+        </ul>
         
         <div class="seguridad-badge">
-            🔒 <strong>¿Es seguro?</strong> PARKFLOW está alojado en <strong>GitHub</strong>, una plataforma confiable que analiza cada archivo en busca de virus y malware. No es una instalación tradicional, solo un <strong>acceso directo</strong> que guarda tus datos localmente en tu teléfono. Nadie más accede a tu información.
+            ✅ <strong>Es tan seguro como visitar cualquier página web.</strong><br>
+            No hay riesgo para tu teléfono ni para tu información.
         </div>
         
         <button class="btn-cerrar-modal" id="cerrarModalInstrucciones">✨ Entendido, ¡comenzar!</button>
     </div>
+</div>
+
+<!-- FOOTER CON INSTRUCCIONES Y SEGURIDAD -->
+<div class="footer-seguridad">
+    <p>🚦 <strong>PARKFLOW · TuRadio</strong> 🚦</p>
+    <p>📲 SIN INTERNET · 🔒 Tus datos están seguros localmente · 🚗 Estacionamiento inteligente</p>
+    <p style="font-size: 0.65rem; margin-top: 8px;">📍 1. Elige nivel y sector | 2. Registra | 3. El tiempo corre solo | 4. Finaliza al volver</p>
+    <p style="font-size: 0.6rem; margin-top: 6px;">🔐 No es una app que se instala. Es una página web confiable alojada en GitHub.</p>
 </div>
 
 <script>
@@ -469,18 +506,5 @@
     configurarSelectores();
     cargarDatos();
 </script>
-
-<footer style="max-width: 800px; margin: 20px auto 0; text-align: center;">
-    <div style="margin-top: 12px; font-size: 0.65rem; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 30px;">
-        📲 <strong>¿Cómo agregar PARKFLOW a tu pantalla de inicio?</strong><br>
-        1. Presiona los <strong>tres puntos ⋮</strong> (arriba a la derecha)<br>
-        2. Selecciona <strong>"Agregar a pantalla de inicio"</strong><br>
-        3. Confirma el nombre y listo<br>
-        ✅ Una vez agregado, funciona <strong>SIN INTERNET</strong>
-    </div>
-    <div style="margin-top: 8px; font-size: 0.6rem; color: #6a9c8a;">
-        🚗 PARKFLOW · TuRadio · Datos almacenados localmente
-    </div>
-</footer>
 </body>
 </html>
